@@ -20,9 +20,19 @@ export default function OrdemServicoDetalhe() {
     api.get(`/ordens-servico/${id}`).then(r => setOs(r.data))
   }
 
-  const exportarPdf = () => {
-    const token = localStorage.getItem('token')
-    window.open(`http://localhost:8000/ordens-servico/${id}/pdf?token=${token}`)
+  const exportarPdf = async () => {
+    try {
+      const response = await api.get(`/ordens-servico/${id}/pdf`, { responseType: 'blob' })
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `OS_${id}.pdf`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    } catch {
+      alert('Erro ao gerar PDF')
+    }
   }
 
   if (!os) return <p className="text-gray-400">Carregando...</p>

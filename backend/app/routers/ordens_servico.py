@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import List
-from io import BytesIO
 from app.database import get_db
 from app.models.ordem_servico import OrdemServico
 from app.models.item_os import ItemOS
 from app.schemas.ordem_servico import OrdemServicoCreate, OrdemServicoUpdate, OrdemServicoOut
 from app.dependencies import get_current_user
 from app.services.exportacao import exportar_ordens_servico
+from app.utils.gerar_pdf import gerar_pdf_os
 
 router = APIRouter(prefix="/ordens-servico", tags=["ordens-servico"])
 
@@ -24,8 +23,7 @@ def criar(data: OrdemServicoCreate, db: Session = Depends(get_db), _=Depends(get
     itens_data = data.itens
     os_data = data.model_dump(exclude={"itens"})
     os = OrdemServico(**os_data)
-    total = sum(i.quantidade * i.valor_unitario for i in itens_data)
-    os.valor_total = total
+    os.valor_total = sum(i.quantidade * i.valor_unitario for i in itens_data)
     db.add(os)
     db.flush()
     for i in itens_data:
@@ -33,6 +31,43 @@ def criar(data: OrdemServicoCreate, db: Session = Depends(get_db), _=Depends(get
     db.commit()
     db.refresh(os)
     return os
+
+@router.get("/exportar/excel")
+def exportar_excel(status: str = None, db: Session = Depends(get_db), _=Depends(get_current_user)):
+    q = db.query(OrdemServico)
+    if status:
+        q = q.filter(OrdemServico.status == status)
+    return exportar_ordens_servico(q.all())
+
+@router.get("/{id}/pdf")
+def exportar_pdf(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):
+    os = db.query(OrdemServico).filter(OrdemServico.id == id).first()
+    if not os:
+        raise HTTPException(404, "OS nao encontrada")
+    itens = []
+    for item in os.itens:
+        descricao = ""
+        if item.servico:
+            descricao = item.servico.nome
+        elif item.produto:
+            descricao = item.produto.nome
+        itens.append({
+            "descricao": descricao,
+            "quantidade": item.quantidade,
+            "valor_unitario": float(item.valor_unitario),
+            "subtotal": float(item.quantidade * item.valor_unitario),
+        })
+    os_data = {
+        "id": os.id,
+        "data_abertura": os.data_abertura.strftime("%d/%m/%Y") if os.data_abertura else "",
+        "data_previsao": os.data_previsao.strftime("%d/%m/%Y") if os.data_previsao else "",
+        "status": os.status,
+        "cliente_nome": os.cliente.nome if os.cliente else "",
+        "descricao_problema": os.descricao_problema or "",
+        "valor_total": float(os.valor_total or 0),
+        "itens": itens,
+    }
+    return gerar_pdf_os(os_data)
 
 @router.get("/{id}", response_model=OrdemServicoOut)
 def buscar(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):
@@ -60,33 +95,3 @@ def deletar(id: int, db: Session = Depends(get_db), _=Depends(get_current_user))
     db.delete(os)
     db.commit()
     return {"ok": True}
-
-@router.get("/exportar/excel")
-def exportar_excel(status: str = None, db: Session = Depends(get_db), _=Depends(get_current_user)):
-    """Exporta ordens de servico em Excel sem dados pessoais (LGPD)."""
-    q = db.query(OrdemServico)
-    if status:
-        q = q.filter(OrdemServico.status == status)
-    return exportar_ordens_servico(q.all())
-
-@router.get("/{id}/pdf")
-def exportar_pdf(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):
-    from reportlab.lib.pagesizes import A4
-    from reportlab.pdfgen import canvas
-    os = db.query(OrdemServico).filter(OrdemServico.id == id).first()
-    if not os:
-        raise HTTPException(404, "OS nao encontrada")
-    buf = BytesIO()
-    c = canvas.Canvas(buf, pagesize=A4)
-    w, h = A4
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(50, h - 50, f"Ordem de Servico #{os.id}")
-    c.setFont("Helvetica", 12)
-    c.drawString(50, h - 80, f"Status: {os.status}")
-    c.drawString(50, h - 100, f"Abertura: {os.data_abertura.strftime('%d/%m/%Y')}")
-    c.drawString(50, h - 120, f"Problema: {os.descricao_problema or '-'}")
-    c.drawString(50, h - 140, f"Total: R$ {os.valor_total:.2f}")
-    c.save()
-    buf.seek(0)
-    return StreamingResponse(buf, media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=OS_{id}.pdf"})

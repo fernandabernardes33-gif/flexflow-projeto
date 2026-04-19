@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import List
-from io import BytesIO
 from app.database import get_db
 from app.models.orcamento import Orcamento
 from app.models.item_orcamento import ItemOrcamento
 from app.schemas.orcamento import OrcamentoCreate, OrcamentoUpdate, OrcamentoOut
 from app.dependencies import get_current_user
+from app.services.exportacao import exportar_financeiro
+from app.utils.gerar_pdf import gerar_pdf_orcamento
 
 router = APIRouter(prefix="/orcamentos", tags=["orcamentos"])
 
@@ -28,6 +28,35 @@ def criar(data: OrcamentoCreate, db: Session = Depends(get_db), _=Depends(get_cu
     db.commit()
     db.refresh(orc)
     return orc
+
+@router.get("/{id}/pdf")
+def exportar_pdf(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):
+    orc = db.query(Orcamento).filter(Orcamento.id == id).first()
+    if not orc:
+        raise HTTPException(404, "Orcamento nao encontrado")
+    itens = []
+    for item in orc.itens:
+        descricao = ""
+        if item.servico:
+            descricao = item.servico.nome
+        elif item.produto:
+            descricao = item.produto.nome
+        itens.append({
+            "descricao": descricao,
+            "quantidade": item.quantidade,
+            "valor_unitario": float(item.valor_unitario),
+            "subtotal": float(item.quantidade * item.valor_unitario),
+        })
+    orc_data = {
+        "id": orc.id,
+        "data": orc.data.strftime("%d/%m/%Y") if orc.data else "",
+        "validade": orc.validade.strftime("%d/%m/%Y") if orc.validade else "",
+        "status": orc.status,
+        "cliente_nome": orc.cliente.nome if orc.cliente else "",
+        "valor_total": float(orc.valor_total or 0),
+        "itens": itens,
+    }
+    return gerar_pdf_orcamento(orc_data)
 
 @router.get("/{id}", response_model=OrcamentoOut)
 def buscar(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):
@@ -55,24 +84,3 @@ def deletar(id: int, db: Session = Depends(get_db), _=Depends(get_current_user))
     db.delete(orc)
     db.commit()
     return {"ok": True}
-
-@router.get("/{id}/pdf")
-def exportar_pdf(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):
-    from reportlab.lib.pagesizes import A4
-    from reportlab.pdfgen import canvas
-    orc = db.query(Orcamento).filter(Orcamento.id == id).first()
-    if not orc:
-        raise HTTPException(404, "Orcamento nao encontrado")
-    buf = BytesIO()
-    c = canvas.Canvas(buf, pagesize=A4)
-    w, h = A4
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(50, h - 50, f"Orcamento #{orc.id}")
-    c.setFont("Helvetica", 12)
-    c.drawString(50, h - 80, f"Status: {orc.status}")
-    c.drawString(50, h - 100, f"Data: {orc.data.strftime('%d/%m/%Y')}")
-    c.drawString(50, h - 120, f"Total: R$ {orc.valor_total:.2f}")
-    c.save()
-    buf.seek(0)
-    return StreamingResponse(buf, media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=Orcamento_{id}.pdf"})

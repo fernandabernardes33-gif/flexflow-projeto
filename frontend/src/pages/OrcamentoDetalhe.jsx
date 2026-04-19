@@ -31,8 +31,18 @@ export default function OrcamentoDetalhe() {
 
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-2xl font-bold">ORC-{orc.id}</h1>
-        <button onClick={() => window.open(`http://localhost:8000/orcamentos/${id}/pdf`)}
-          className="flex items-center gap-2 border border-primary text-primary px-3 py-2 rounded-lg text-sm hover:bg-primary-light">
+        <button onClick={async () => {
+          try {
+            const response = await api.get(`/orcamentos/${id}/pdf`, { responseType: 'blob' })
+            const url = window.URL.createObjectURL(new Blob([response.data]))
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', `Orcamento_${id}.pdf`)
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+          } catch { alert('Erro ao gerar PDF') }
+        }} className="flex items-center gap-2 border border-primary text-primary px-3 py-2 rounded-lg text-sm hover:bg-primary-light">
           <FileDown size={16} /> Exportar PDF
         </button>
       </div>
