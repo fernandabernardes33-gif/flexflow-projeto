@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, engine
@@ -10,16 +11,21 @@ import app.models.movimentacao_financeira, app.models.lembrete
 from app.routers import auth, clientes, produtos, estoque, servicos
 from app.routers import ordens_servico, orcamentos, financeiro, lembretes, painel
 
+logging.basicConfig(
+    level=logging.WARNING,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="AUssistencia API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 app.include_router(auth.router)
