@@ -5,6 +5,7 @@ from app.database import get_db
 from app.models.movimentacao_financeira import MovimentacaoFinanceira
 from app.schemas.financeiro import MovimentacaoFinanceiraCreate, MovimentacaoFinanceiraOut
 from app.dependencies import get_current_user
+from app.services.exportacao import exportar_financeiro
 
 router = APIRouter(prefix="/financeiro", tags=["financeiro"])
 
@@ -19,6 +20,12 @@ def criar(data: MovimentacaoFinanceiraCreate, db: Session = Depends(get_db), _=D
     db.commit()
     db.refresh(m)
     return m
+
+@router.get("/exportar/excel")
+def exportar_excel(db: Session = Depends(get_db), _=Depends(get_current_user)):
+    """Exporta todas as movimentacoes financeiras em Excel."""
+    movs = db.query(MovimentacaoFinanceira).order_by(MovimentacaoFinanceira.data.desc()).all()
+    return exportar_financeiro(movs)
 
 @router.delete("/{id}")
 def deletar(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):

@@ -8,6 +8,7 @@ from app.models.ordem_servico import OrdemServico
 from app.models.item_os import ItemOS
 from app.schemas.ordem_servico import OrdemServicoCreate, OrdemServicoUpdate, OrdemServicoOut
 from app.dependencies import get_current_user
+from app.services.exportacao import exportar_ordens_servico
 
 router = APIRouter(prefix="/ordens-servico", tags=["ordens-servico"])
 
@@ -59,6 +60,14 @@ def deletar(id: int, db: Session = Depends(get_db), _=Depends(get_current_user))
     db.delete(os)
     db.commit()
     return {"ok": True}
+
+@router.get("/exportar/excel")
+def exportar_excel(status: str = None, db: Session = Depends(get_db), _=Depends(get_current_user)):
+    """Exporta ordens de servico em Excel sem dados pessoais (LGPD)."""
+    q = db.query(OrdemServico)
+    if status:
+        q = q.filter(OrdemServico.status == status)
+    return exportar_ordens_servico(q.all())
 
 @router.get("/{id}/pdf")
 def exportar_pdf(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):

@@ -7,6 +7,7 @@ from app.models.ordem_servico import OrdemServico
 from app.models.orcamento import Orcamento
 from app.schemas.cliente import ClienteCreate, ClienteUpdate, ClienteOut
 from app.dependencies import get_current_user
+from app.services.exportacao import exportar_clientes
 
 router = APIRouter(prefix="/clientes", tags=["clientes"])
 
@@ -48,6 +49,12 @@ def deletar(id: int, db: Session = Depends(get_db), _=Depends(get_current_user))
     db.delete(c)
     db.commit()
     return {"ok": True}
+
+@router.get("/exportar/excel")
+def exportar_excel(db: Session = Depends(get_db), _=Depends(get_current_user)):
+    """Exporta todos os clientes em Excel com CPF mascarado (LGPD)."""
+    clientes = db.query(Cliente).all()
+    return exportar_clientes(clientes)
 
 @router.get("/{id}/historico")
 def historico(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):
