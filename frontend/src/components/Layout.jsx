@@ -1,17 +1,16 @@
 import { useState, useContext } from 'react'
-import { Outlet, NavLink, useNavigate } from 'react-router-dom'
+import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import {
   LayoutDashboard, Users, Package, Wrench, ClipboardList,
-  FileText, DollarSign, Bell, LogOut, Menu, X, Monitor
+  FileText, DollarSign, Bell, LogOut, Menu, Monitor,
+  ChevronDown, ChevronUp
 } from 'lucide-react'
 
-const nav = [
+const navPrincipal = [
   { to: '/', icon: LayoutDashboard, label: 'Painel' },
   { to: '/clientes', icon: Users, label: 'Clientes' },
   { to: '/produtos', icon: Package, label: 'Estoque' },
-  { to: '/servicos', icon: Wrench, label: 'Servicos' },
-  { to: '/ordens-servico', icon: ClipboardList, label: 'Ordens de Servico' },
   { to: '/orcamentos', icon: FileText, label: 'Orcamentos' },
   { to: '/financeiro', icon: DollarSign, label: 'Financeiro' },
   { to: '/lembretes', icon: Bell, label: 'Lembretes' },
@@ -20,7 +19,12 @@ const nav = [
 export default function Layout() {
   const { user, logout } = useContext(AuthContext)
   const navigate = useNavigate()
+  const location = useLocation()
   const [open, setOpen] = useState(false)
+  const [submenuAberto, setSubmenuAberto] = useState(
+    location.pathname.startsWith('/servicos') ||
+    location.pathname.startsWith('/ordens-servico')
+  )
 
   const handleLogout = () => { logout(); navigate('/login') }
 
@@ -31,7 +35,9 @@ export default function Layout() {
         <span className="font-bold text-lg">SIGIT</span>
       </div>
       <nav className="flex-1 p-3 space-y-1">
-        {nav.map(({ to, icon: Icon, label }) => (
+
+        {/* Painel, Clientes, Estoque */}
+        {navPrincipal.slice(0, 3).map(({ to, icon: Icon, label }) => (
           <NavLink key={to} to={to} end={to === '/'}
             onClick={() => setOpen(false)}
             className={({ isActive }) =>
@@ -42,6 +48,61 @@ export default function Layout() {
             {label}
           </NavLink>
         ))}
+
+        {/* Serviços com submenu */}
+        <div>
+          <button
+            onClick={() => setSubmenuAberto(!submenuAberto)}
+            className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-sm transition-colors ${
+              location.pathname.startsWith('/servicos') || location.pathname.startsWith('/ordens-servico')
+                ? 'bg-white/20 font-semibold'
+                : 'hover:bg-white/10'
+            }`}
+          >
+            <span className="flex items-center gap-3">
+              <Wrench size={18} />
+              Servicos
+            </span>
+            {submenuAberto ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </button>
+
+          {submenuAberto && (
+            <div className="ml-4 mt-1 flex flex-col gap-1 border-l-2 border-blue-400 pl-3">
+              <NavLink to="/servicos"
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
+                    isActive ? 'bg-white/20 font-semibold' : 'hover:bg-white/10'
+                  }`}>
+                <Wrench size={15} />
+                Catalogo de Servicos
+              </NavLink>
+              <NavLink to="/ordens-servico"
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
+                    isActive ? 'bg-white/20 font-semibold' : 'hover:bg-white/10'
+                  }`}>
+                <ClipboardList size={15} />
+                Ordens de Servico
+              </NavLink>
+            </div>
+          )}
+        </div>
+
+        {/* Orçamentos, Financeiro, Lembretes */}
+        {navPrincipal.slice(3).map(({ to, icon: Icon, label }) => (
+          <NavLink key={to} to={to}
+            onClick={() => setOpen(false)}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                isActive ? 'bg-white/20 font-semibold' : 'hover:bg-white/10'
+              }`}>
+            <Icon size={18} />
+            {label}
+          </NavLink>
+        ))}
+
       </nav>
       <div className="p-4 border-t border-blue-700">
         <p className="text-xs text-blue-200 mb-2">{user?.nome || 'Usuario'}</p>
