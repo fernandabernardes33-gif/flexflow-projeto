@@ -1,19 +1,23 @@
 @echo off
 echo ============================================
-echo  AUssistencia - Instalacao inicial
+echo  SIGIT - Instalacao inicial
 echo ============================================
 
-echo Verificando Python 3.11...
-py -3.11 --version >nul 2>&1
+echo Verificando Python...
+python --version >nul 2>&1
 if errorlevel 1 (
-    echo ERRO: Python 3.11 nao encontrado!
-    echo Baixe em: https://www.python.org/downloads/release/python-3119/
-    pause & exit /b 1
+    py --version >nul 2>&1
+    if errorlevel 1 (
+        echo ERRO: Python nao encontrado!
+        echo Baixe em: https://www.python.org/downloads/
+        echo Durante a instalacao, marque "Add Python to PATH"
+        pause & exit /b 1
+    )
 )
 
-echo [1/4] Criando venv com Python 3.11...
+echo [1/4] Criando venv...
 cd /d %~dp0backend
-py -3.11 -m venv venv
+python -m venv venv 2>nul || py -m venv venv
 call venv\Scripts\activate
 python -m pip install --upgrade pip
 pip install wheel
