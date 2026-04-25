@@ -19,7 +19,7 @@ logging.basicConfig(
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="AUssistencia API", version="1.0.0")
+app = FastAPI(title="SIGIT API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -43,4 +43,4 @@ app.include_router(painel.router)
 
 @app.get("/")
 def root():
-    return {"status": "AUssistencia API online"}
+    return {"status": "SIGIT API online"}

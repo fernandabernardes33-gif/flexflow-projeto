@@ -31,7 +31,7 @@ export default function Login() {
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
         <div className="flex items-center gap-2 mb-8 justify-center">
           <Monitor className="text-primary" size={28} />
-          <h1 className="text-2xl font-bold text-primary">AUssistencia</h1>
+          <h1 className="text-2xl font-bold text-primary">SIGIT</h1>
         </div>
         <form onSubmit={submit} className="space-y-4">
           <div>
@@ -39,7 +39,7 @@ export default function Login() {
             <input type="email" required value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })}
               className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="admin@aussistencia.com" />
+              placeholder="seu@email.com" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>

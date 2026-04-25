@@ -28,7 +28,7 @@ export default function Layout() {
     <aside className={`bg-primary text-white flex flex-col ${mobile ? 'w-64' : 'w-64 hidden md:flex'} h-full`}>
       <div className="p-5 border-b border-blue-700 flex items-center gap-2">
         <Monitor size={22} />
-        <span className="font-bold text-lg">AUssistencia</span>
+        <span className="font-bold text-lg">SIGIT</span>
       </div>
       <nav className="flex-1 p-3 space-y-1">
         {nav.map(({ to, icon: Icon, label }) => (
@@ -71,7 +71,7 @@ export default function Layout() {
           <button onClick={() => setOpen(true)}>
             <Menu size={22} />
           </button>
-          <span className="font-bold text-primary">AUssistencia</span>
+          <span className="font-bold text-primary">SIGIT</span>
         </header>
         <main className="flex-1 overflow-auto p-4 md:p-6">
           <Outlet />

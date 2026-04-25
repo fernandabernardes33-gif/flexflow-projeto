@@ -29,10 +29,10 @@ RODAPE_LGPD = (
 
 
 def _cabecalho(el, subtitulo):
-    el.append(Paragraph("AUssistencia",
+    el.append(Paragraph("SIGIT",
         _st('h1', fontSize=20, fontName='Helvetica-Bold',
             textColor=AZUL, alignment=TA_CENTER, spaceAfter=2)))
-    el.append(Paragraph("Assistencia Tecnica de Informatica",
+    el.append(Paragraph("Sistema Integrado de Gestao em Informatica e Tecnologia",
         _st('h2', fontSize=10, fontName='Helvetica',
             textColor=CINZA_TEXTO, alignment=TA_CENTER, spaceAfter=12)))
     el.append(HRFlowable(width="100%", thickness=2, color=AZUL, spaceAfter=12))
@@ -50,7 +50,7 @@ def _rodape(el):
     el.append(Spacer(1, 4))
     el.append(Paragraph(
         f"Documento gerado em {datetime.now().strftime('%d/%m/%Y as %H:%M')} "
-        "| AUssistencia — Assistencia Tecnica de Informatica",
+        "| SIGIT — Sistema Integrado de Gestao em Informatica e Tecnologia",
         _st('footer', fontSize=7, fontName='Helvetica',
             textColor=colors.grey, alignment=TA_CENTER)))
 
