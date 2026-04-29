@@ -35,7 +35,7 @@ export default function Servicos() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Servicos</h1>
+        <h1 className="text-2xl font-bold text-slate-800">Servicos</h1>
         <button onClick={() => abrir()}
           className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-primary-dark">
           <Plus size={16} /> Novo Servico
@@ -48,17 +48,17 @@ export default function Servicos() {
             <div className="flex justify-between items-start">
               <div>
                 <p className="font-semibold">{s.nome}</p>
-                {s.descricao && <p className="text-sm text-gray-500 mt-1">{s.descricao}</p>}
+                {s.descricao && <p className="text-sm text-slate-400 mt-1">{s.descricao}</p>}
                 <p className="text-primary font-bold mt-2">R$ {s.valor.toFixed(2)}</p>
               </div>
               <div className="flex gap-1">
-                <button onClick={() => abrir(s)} className="text-gray-400 hover:text-primary p-1"><Pencil size={15} /></button>
-                <button onClick={() => deletar(s.id)} className="text-gray-400 hover:text-red-500 p-1"><Trash2 size={15} /></button>
+                <button onClick={() => abrir(s)} className="text-slate-400 hover:text-primary p-1"><Pencil size={15} /></button>
+                <button onClick={() => deletar(s.id)} className="text-slate-400 hover:text-red-500 p-1"><Trash2 size={15} /></button>
               </div>
             </div>
           </div>
         ))}
-        {lista.length === 0 && <p className="text-gray-400 text-sm">Nenhum servico cadastrado.</p>}
+        {lista.length === 0 && <p className="text-slate-400 text-sm">Nenhum servico cadastrado.</p>}
       </div>
 
       {modal && (

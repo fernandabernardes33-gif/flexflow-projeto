@@ -37,7 +37,7 @@ export default function Clientes() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Clientes</h1>
+        <h1 className="text-2xl font-bold text-slate-800">Clientes</h1>
         <button onClick={() => setModal(true)}
           className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-primary-dark">
           <Plus size={16} /> Novo Cliente
@@ -45,7 +45,7 @@ export default function Clientes() {
       </div>
 
       <div className="relative">
-        <Search size={16} className="absolute left-3 top-3 text-gray-400" />
+        <Search size={16} className="absolute left-3 top-3 text-slate-400" />
         <input value={filtro} onChange={e => setFiltro(e.target.value)}
           placeholder="Buscar por nome ou telefone..."
           className="w-full border rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
@@ -53,7 +53,7 @@ export default function Clientes() {
 
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-600 text-left">
+          <thead className="bg-slate-50 text-slate-600 text-left">
             <tr>
               <th className="px-4 py-3">Nome</th>
               <th className="px-4 py-3 hidden md:table-cell">Telefone</th>
@@ -63,7 +63,7 @@ export default function Clientes() {
           </thead>
           <tbody>
             {filtrados.map(c => (
-              <tr key={c.id} className="border-t hover:bg-gray-50">
+              <tr key={c.id} className="border-t hover:bg-slate-50">
                 <td className="px-4 py-3 font-medium">{c.nome}</td>
                 <td className="px-4 py-3 hidden md:table-cell">{c.telefone || '-'}</td>
                 <td className="px-4 py-3 hidden lg:table-cell">{c.email || '-'}</td>
@@ -76,7 +76,7 @@ export default function Clientes() {
               </tr>
             ))}
             {filtrados.length === 0 && (
-              <tr><td colSpan={4} className="px-4 py-8 text-center text-gray-400">Nenhum cliente encontrado.</td></tr>
+              <tr><td colSpan={4} className="px-4 py-8 text-center text-slate-400">Nenhum cliente encontrado.</td></tr>
             )}
           </tbody>
         </table>
@@ -89,7 +89,7 @@ export default function Clientes() {
             <form onSubmit={salvar} className="space-y-3">
               {[['nome','Nome*'],['cpf_cnpj','CPF/CNPJ'],['telefone','Telefone'],['email','E-mail'],['endereco','Endereco']].map(([k,l]) => (
                 <div key={k}>
-                  <label className="text-sm font-medium text-gray-700">{l}</label>
+                  <label className="text-sm font-medium text-slate-600">{l}</label>
                   <input value={form[k]} onChange={e => setForm({...form,[k]:e.target.value})}
                     required={k==='nome'}
                     className="w-full border rounded-lg px-3 py-2 text-sm mt-1 focus:outline-none focus:ring-2 focus:ring-primary" />

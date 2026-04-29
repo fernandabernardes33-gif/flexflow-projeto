@@ -21,7 +21,7 @@ export default function OrcamentoDetalhe() {
     api.get(`/orcamentos/${id}`).then(r => setOrc(r.data))
   }
 
-  if (!orc) return <p className="text-gray-400">Carregando...</p>
+  if (!orc) return <p className="text-slate-400">Carregando...</p>
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -49,9 +49,9 @@ export default function OrcamentoDetalhe() {
 
       <div className="bg-white rounded-xl p-5 shadow-sm border space-y-3">
         <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor[orc.status]}`}>{orc.status}</span>
-        <p className="text-sm text-gray-600"><strong>Data:</strong> {new Date(orc.data).toLocaleDateString('pt-BR')}</p>
-        {orc.validade && <p className="text-sm text-gray-600"><strong>Validade:</strong> {new Date(orc.validade).toLocaleDateString('pt-BR')}</p>}
-        {orc.observacoes && <p className="text-sm text-gray-600"><strong>Obs:</strong> {orc.observacoes}</p>}
+        <p className="text-sm text-slate-600"><strong>Data:</strong> {new Date(orc.data).toLocaleDateString('pt-BR')}</p>
+        {orc.validade && <p className="text-sm text-slate-600"><strong>Validade:</strong> {new Date(orc.validade).toLocaleDateString('pt-BR')}</p>}
+        {orc.observacoes && <p className="text-sm text-slate-600"><strong>Obs:</strong> {orc.observacoes}</p>}
         <p className="font-bold text-lg">Total: R$ {orc.valor_total.toFixed(2)}</p>
       </div>
 
@@ -73,7 +73,7 @@ export default function OrcamentoDetalhe() {
           {['PENDENTE', 'APROVADO', 'RECUSADO'].map(s => (
             <button key={s} onClick={() => mudarStatus(s)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-                orc.status === s ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 hover:border-primary'}`}>
+                orc.status === s ? 'bg-primary text-white border-primary' : 'bg-white text-slate-600 hover:border-primary'}`}>
               {s}
             </button>
           ))}

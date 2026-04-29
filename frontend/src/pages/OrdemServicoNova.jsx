@@ -54,7 +54,7 @@ export default function OrdemServicoNova() {
 
       <form onSubmit={salvar} className="space-y-4">
         <div className="bg-white rounded-xl p-5 shadow-sm border space-y-3">
-          <h2 className="font-semibold text-gray-700">Dados Gerais</h2>
+          <h2 className="font-semibold text-slate-600">Dados Gerais</h2>
           <select required value={form.cliente_id} onChange={e => setForm({...form,cliente_id:e.target.value})}
             className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
             <option value="">Selecione o cliente*</option>
@@ -72,7 +72,7 @@ export default function OrdemServicoNova() {
         </div>
 
         <div className="bg-white rounded-xl p-5 shadow-sm border space-y-3">
-          <h2 className="font-semibold text-gray-700">Itens</h2>
+          <h2 className="font-semibold text-slate-600">Itens</h2>
           <div className="flex gap-2 flex-wrap">
             <select value={novoItem.tipo} onChange={e => setNovoItem({...novoItem,tipo:e.target.value,ref_id:''})}
               className="border rounded-lg px-3 py-2 text-sm">

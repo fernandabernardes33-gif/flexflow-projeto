@@ -29,8 +29,8 @@ export default function Layout() {
   const handleLogout = () => { logout(); navigate('/login') }
 
   const Sidebar = ({ mobile = false }) => (
-    <aside className={`bg-primary text-white flex flex-col ${mobile ? 'w-64' : 'w-64 hidden md:flex'} h-full`}>
-      <div className="p-5 border-b border-blue-700 flex items-center gap-2">
+    <aside className={`bg-slate-900 text-white flex flex-col ${mobile ? 'w-64' : 'w-64 hidden md:flex'} h-full`}>
+      <div className="p-5 border-b border-white/10 flex items-center gap-2">
         <Monitor size={22} />
         <span className="font-bold text-lg">SIGIT</span>
       </div>
@@ -67,7 +67,7 @@ export default function Layout() {
           </button>
 
           {submenuAberto && (
-            <div className="ml-4 mt-1 flex flex-col gap-1 border-l-2 border-blue-400 pl-3">
+            <div className="ml-4 mt-1 flex flex-col gap-1 border-l-2 border-white/20 pl-3">
               <NavLink to="/servicos"
                 onClick={() => setOpen(false)}
                 className={({ isActive }) =>
@@ -104,8 +104,8 @@ export default function Layout() {
         ))}
 
       </nav>
-      <div className="p-4 border-t border-blue-700">
-        <p className="text-xs text-blue-200 mb-2">{user?.nome || 'Usuario'}</p>
+      <div className="p-4 border-t border-white/10">
+        <p className="text-xs text-white/50 mb-2">{user?.nome || 'Usuario'}</p>
         <button onClick={handleLogout}
           className="flex items-center gap-2 text-sm hover:text-red-300 transition-colors">
           <LogOut size={16} /> Sair
@@ -134,7 +134,7 @@ export default function Layout() {
           </button>
           <span className="font-bold text-primary">SIGIT</span>
         </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6">
+        <main className="flex-1 overflow-auto p-4 md:p-6 bg-slate-50">
           <Outlet />
         </main>
       </div>

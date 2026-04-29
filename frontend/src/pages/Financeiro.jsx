@@ -29,7 +29,7 @@ export default function Financeiro() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Financeiro</h1>
+        <h1 className="text-2xl font-bold text-slate-800">Financeiro</h1>
         <button onClick={() => setModal(true)}
           className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-primary-dark">
           <Plus size={16} /> Novo Lancamento
@@ -38,15 +38,15 @@ export default function Financeiro() {
 
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-xl p-4 shadow-sm border text-center">
-          <p className="text-sm text-gray-500">Receitas</p>
+          <p className="text-sm text-slate-400">Receitas</p>
           <p className="text-xl font-bold text-green-600">R$ {receita.toFixed(2)}</p>
         </div>
         <div className="bg-white rounded-xl p-4 shadow-sm border text-center">
-          <p className="text-sm text-gray-500">Despesas</p>
+          <p className="text-sm text-slate-400">Despesas</p>
           <p className="text-xl font-bold text-red-500">R$ {despesas.toFixed(2)}</p>
         </div>
         <div className="bg-white rounded-xl p-4 shadow-sm border text-center">
-          <p className="text-sm text-gray-500">Saldo</p>
+          <p className="text-sm text-slate-400">Saldo</p>
           <p className={`text-xl font-bold ${receita - despesas >= 0 ? 'text-primary' : 'text-red-500'}`}>
             R$ {(receita - despesas).toFixed(2)}
           </p>
@@ -55,7 +55,7 @@ export default function Financeiro() {
 
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-600 text-left">
+          <thead className="bg-slate-50 text-slate-600 text-left">
             <tr>
               <th className="px-4 py-3">Descricao</th>
               <th className="px-4 py-3">Tipo</th>
@@ -67,7 +67,7 @@ export default function Financeiro() {
           </thead>
           <tbody>
             {lista.map(m => (
-              <tr key={m.id} className="border-t hover:bg-gray-50">
+              <tr key={m.id} className="border-t hover:bg-slate-50">
                 <td className="px-4 py-3">{m.descricao || '-'}</td>
                 <td className="px-4 py-3">
                   <span className={`px-2 py-0.5 rounded text-xs font-medium ${

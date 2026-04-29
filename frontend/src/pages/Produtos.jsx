@@ -34,7 +34,7 @@ export default function Produtos() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Estoque</h1>
+        <h1 className="text-2xl font-bold text-slate-800">Estoque</h1>
         <button onClick={() => setModal(true)}
           className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-primary-dark">
           <Plus size={16} /> Novo Produto
@@ -43,7 +43,7 @@ export default function Produtos() {
 
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-600 text-left">
+          <thead className="bg-slate-50 text-slate-600 text-left">
             <tr>
               <th className="px-4 py-3">Produto</th>
               <th className="px-4 py-3 hidden md:table-cell">Venda</th>
@@ -53,7 +53,7 @@ export default function Produtos() {
           </thead>
           <tbody>
             {lista.map(p => (
-              <tr key={p.id} className={`border-t hover:bg-gray-50 ${p.quantidade_estoque <= p.quantidade_minima ? 'bg-red-50' : ''}`}>
+              <tr key={p.id} className={`border-t hover:bg-slate-50 ${p.quantidade_estoque <= p.quantidade_minima ? 'bg-red-50' : ''}`}>
                 <td className="px-4 py-3 font-medium">{p.nome}</td>
                 <td className="px-4 py-3 hidden md:table-cell">R$ {p.preco_venda.toFixed(2)}</td>
                 <td className="px-4 py-3">
@@ -109,7 +109,7 @@ export default function Produtos() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl w-full max-w-sm p-6">
             <h2 className="text-lg font-bold mb-1">Movimentacao de Estoque</h2>
-            <p className="text-sm text-gray-500 mb-4">{movModal.nome}</p>
+            <p className="text-sm text-slate-400 mb-4">{movModal.nome}</p>
             <form onSubmit={registrarMov} className="space-y-3">
               <select value={mov.tipo} onChange={e => setMov({...mov,tipo:e.target.value})}
                 className="w-full border rounded-lg px-3 py-2 text-sm">

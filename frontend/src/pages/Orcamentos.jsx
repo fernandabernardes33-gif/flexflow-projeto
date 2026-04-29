@@ -18,7 +18,7 @@ export default function Orcamentos() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Orcamentos</h1>
+        <h1 className="text-2xl font-bold text-slate-800">Orcamentos</h1>
         <button onClick={() => navigate('/orcamentos/novo')}
           className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-primary-dark">
           <Plus size={16} /> Novo Orcamento
@@ -27,7 +27,7 @@ export default function Orcamentos() {
 
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-600 text-left">
+          <thead className="bg-slate-50 text-slate-600 text-left">
             <tr>
               <th className="px-4 py-3">#</th>
               <th className="px-4 py-3">Status</th>
@@ -38,7 +38,7 @@ export default function Orcamentos() {
           </thead>
           <tbody>
             {lista.map(orc => (
-              <tr key={orc.id} className="border-t hover:bg-gray-50">
+              <tr key={orc.id} className="border-t hover:bg-slate-50">
                 <td className="px-4 py-3 font-medium">ORC-{orc.id}</td>
                 <td className="px-4 py-3">
                   <span className={`px-2 py-0.5 rounded text-xs font-medium ${statusColor[orc.status]}`}>{orc.status}</span>
@@ -51,7 +51,7 @@ export default function Orcamentos() {
               </tr>
             ))}
             {lista.length === 0 && (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400">Nenhum orcamento encontrado.</td></tr>
+              <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-400">Nenhum orcamento encontrado.</td></tr>
             )}
           </tbody>
         </table>

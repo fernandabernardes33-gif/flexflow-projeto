@@ -5,7 +5,7 @@ import { ArrowLeft, FileDown } from 'lucide-react'
 
 const statusColor = {
   ABERTA: 'bg-blue-100 text-blue-700', EM_ANDAMENTO: 'bg-yellow-100 text-yellow-700',
-  CONCLUIDA: 'bg-green-100 text-green-700', CANCELADA: 'bg-gray-100 text-gray-600',
+  CONCLUIDA: 'bg-green-100 text-green-700', CANCELADA: 'bg-slate-100 text-slate-600',
 }
 
 export default function OrdemServicoDetalhe() {
@@ -20,22 +20,22 @@ export default function OrdemServicoDetalhe() {
     api.get(`/ordens-servico/${id}`).then(r => setOs(r.data))
   }
 
-  const exportarPdf = async () => {
+  const exportar = async (formato) => {
     try {
-      const response = await api.get(`/ordens-servico/${id}/pdf`, { responseType: 'blob' })
+      const response = await api.get(`/ordens-servico/${id}/${formato}`, { responseType: 'blob' })
       const url = window.URL.createObjectURL(new Blob([response.data]))
       const link = document.createElement('a')
       link.href = url
-      link.setAttribute('download', `OS_${id}.pdf`)
+      link.setAttribute('download', `OS_${id}.${formato === 'pdf' ? 'pdf' : 'xlsx'}`)
       document.body.appendChild(link)
       link.click()
       link.remove()
     } catch {
-      alert('Erro ao gerar PDF')
+      alert(`Erro ao gerar ${formato.toUpperCase()}`)
     }
   }
 
-  if (!os) return <p className="text-gray-400">Carregando...</p>
+  if (!os) return <p className="text-slate-400">Carregando...</p>
 
   return (
     <div className="space-y-6 max-w-2xl">
@@ -46,9 +46,13 @@ export default function OrdemServicoDetalhe() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-2xl font-bold">OS-{os.id}</h1>
         <div className="flex gap-2">
-          <button onClick={exportarPdf}
+          <button onClick={() => exportar('pdf')}
             className="flex items-center gap-2 border border-primary text-primary px-3 py-2 rounded-lg text-sm hover:bg-primary-light">
             <FileDown size={16} /> Exportar PDF
+          </button>
+          <button onClick={() => exportar('excel')}
+            className="flex items-center gap-2 border border-primary text-primary px-3 py-2 rounded-lg text-sm hover:bg-primary-light">
+            <FileDown size={16} /> Exportar Excel
           </button>
         </div>
       </div>
@@ -57,10 +61,10 @@ export default function OrdemServicoDetalhe() {
         <div className="flex items-center gap-3">
           <span className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor[os.status]}`}>{os.status}</span>
         </div>
-        <p className="text-sm text-gray-600"><strong>Abertura:</strong> {new Date(os.data_abertura).toLocaleDateString('pt-BR')}</p>
-        {os.data_previsao && <p className="text-sm text-gray-600"><strong>Previsao:</strong> {new Date(os.data_previsao).toLocaleDateString('pt-BR')}</p>}
-        {os.descricao_problema && <p className="text-sm text-gray-600"><strong>Problema:</strong> {os.descricao_problema}</p>}
-        {os.observacoes && <p className="text-sm text-gray-600"><strong>Obs:</strong> {os.observacoes}</p>}
+        <p className="text-sm text-slate-600"><strong>Abertura:</strong> {new Date(os.data_abertura).toLocaleDateString('pt-BR')}</p>
+        {os.data_previsao && <p className="text-sm text-slate-600"><strong>Previsao:</strong> {new Date(os.data_previsao).toLocaleDateString('pt-BR')}</p>}
+        {os.descricao_problema && <p className="text-sm text-slate-600"><strong>Problema:</strong> {os.descricao_problema}</p>}
+        {os.observacoes && <p className="text-sm text-slate-600"><strong>Obs:</strong> {os.observacoes}</p>}
         <p className="font-bold text-lg">Total: R$ {os.valor_total.toFixed(2)}</p>
       </div>
 
@@ -82,7 +86,7 @@ export default function OrdemServicoDetalhe() {
           {['ABERTA', 'EM_ANDAMENTO', 'CONCLUIDA', 'CANCELADA'].map(s => (
             <button key={s} onClick={() => mudarStatus(s)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
-                os.status === s ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 hover:border-primary'}`}>
+                os.status === s ? 'bg-primary text-white border-primary' : 'bg-white text-slate-600 hover:border-primary'}`}>
               {s}
             </button>
           ))}

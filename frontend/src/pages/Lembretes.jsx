@@ -33,7 +33,7 @@ export default function Lembretes() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">Lembretes</h1>
+        <h1 className="text-2xl font-bold text-slate-800">Lembretes</h1>
         <button onClick={() => setModal(true)}
           className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-primary-dark">
           <Plus size={16} /> Novo Lembrete
@@ -41,12 +41,12 @@ export default function Lembretes() {
       </div>
 
       <div className="space-y-2">
-        <h2 className="font-semibold text-gray-600 text-sm">Pendentes ({pendentes.length})</h2>
+        <h2 className="font-semibold text-slate-600 text-sm">Pendentes ({pendentes.length})</h2>
         {pendentes.map(l => (
           <div key={l.id} className="bg-white rounded-xl p-4 shadow-sm border flex items-center justify-between gap-3">
             <div>
               <p className="font-medium">{l.titulo}</p>
-              {l.descricao && <p className="text-sm text-gray-500">{l.descricao}</p>}
+              {l.descricao && <p className="text-sm text-slate-400">{l.descricao}</p>}
               {l.data_prazo && <p className="text-xs text-orange-500 mt-1">Prazo: {new Date(l.data_prazo).toLocaleDateString('pt-BR')}</p>}
             </div>
             <div className="flex gap-2 shrink-0">
@@ -57,12 +57,12 @@ export default function Lembretes() {
             </div>
           </div>
         ))}
-        {pendentes.length === 0 && <p className="text-sm text-gray-400">Nenhum lembrete pendente.</p>}
+        {pendentes.length === 0 && <p className="text-sm text-slate-400">Nenhum lembrete pendente.</p>}
       </div>
 
       {concluidos.length > 0 && (
         <div className="space-y-2">
-          <h2 className="font-semibold text-gray-400 text-sm">Concluidos ({concluidos.length})</h2>
+          <h2 className="font-semibold text-slate-400 text-sm">Concluidos ({concluidos.length})</h2>
           {concluidos.map(l => (
             <div key={l.id} className="bg-white rounded-xl p-4 shadow-sm border flex items-center justify-between gap-3 opacity-60">
               <div>

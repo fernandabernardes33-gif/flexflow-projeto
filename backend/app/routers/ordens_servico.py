@@ -6,7 +6,7 @@ from app.models.ordem_servico import OrdemServico
 from app.models.item_os import ItemOS
 from app.schemas.ordem_servico import OrdemServicoCreate, OrdemServicoUpdate, OrdemServicoOut
 from app.dependencies import get_current_user
-from app.services.exportacao import exportar_ordens_servico
+from app.services.exportacao import exportar_ordens_servico, gerar_excel
 from app.utils.gerar_pdf import gerar_pdf_os
 
 router = APIRouter(prefix="/ordens-servico", tags=["ordens-servico"])
@@ -38,6 +38,27 @@ def exportar_excel(status: str = None, db: Session = Depends(get_db), _=Depends(
     if status:
         q = q.filter(OrdemServico.status == status)
     return exportar_ordens_servico(q.all())
+
+@router.get("/{id}/excel")
+def exportar_excel_os(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):
+    os = db.query(OrdemServico).filter(OrdemServico.id == id).first()
+    if not os:
+        raise HTTPException(404, "OS nao encontrada")
+    dados = []
+    for item in os.itens:
+        descricao = ""
+        if item.servico:
+            descricao = item.servico.nome
+        elif item.produto:
+            descricao = item.produto.nome
+        dados.append({
+            "Item": descricao,
+            "Qtd": item.quantidade,
+            "Valor Unit. (R$)": f"{float(item.valor_unitario):.2f}",
+            "Subtotal (R$)": f"{float(item.quantidade * item.valor_unitario):.2f}",
+        })
+    dados.append({"Item": "TOTAL", "Qtd": "", "Valor Unit. (R$)": "", "Subtotal (R$)": f"{float(os.valor_total or 0):.2f}"})
+    return gerar_excel(dados, nome_aba=f"OS-{id}", nome_arquivo=f"OS_{id}.xlsx")
 
 @router.get("/{id}/pdf")
 def exportar_pdf(id: int, db: Session = Depends(get_db), _=Depends(get_current_user)):

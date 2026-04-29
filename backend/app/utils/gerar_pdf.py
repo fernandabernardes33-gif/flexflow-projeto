@@ -29,12 +29,10 @@ RODAPE_LGPD = (
 
 
 def _cabecalho(el, subtitulo):
-    el.append(Paragraph("SIGIT",
-        _st('h1', fontSize=20, fontName='Helvetica-Bold',
-            textColor=AZUL, alignment=TA_CENTER, spaceAfter=2)))
-    el.append(Paragraph("Sistema Integrado de Gestao em Informatica e Tecnologia",
-        _st('h2', fontSize=10, fontName='Helvetica',
-            textColor=CINZA_TEXTO, alignment=TA_CENTER, spaceAfter=12)))
+    el.append(Paragraph(
+        '<font size="22" color="#2563EB"><b>SIGIT</b></font><br/>'
+        '<font size="10" color="#555555">Sistema Integrado de Gestao em Informatica e Tecnologia</font>',
+        _st('header', fontName='Helvetica', alignment=TA_CENTER, spaceAfter=14, leading=26)))
     el.append(HRFlowable(width="100%", thickness=2, color=AZUL, spaceAfter=12))
     el.append(Paragraph(subtitulo,
         _st('sub', fontSize=14, fontName='Helvetica-Bold',
