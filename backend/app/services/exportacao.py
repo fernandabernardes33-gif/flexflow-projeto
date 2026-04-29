@@ -8,7 +8,8 @@ Princípios LGPD aplicados:
 """
 import io
 from typing import Any
-import pandas as pd
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment
 from fastapi.responses import StreamingResponse
 
 
@@ -29,18 +30,47 @@ def gerar_excel(
     Recebe uma lista de dicionários e retorna um StreamingResponse com o .xlsx.
     Não salva nada em disco — tudo gerado em memória (io.BytesIO).
     """
-    df = pd.DataFrame(dados)
+    wb = Workbook()
+    ws = wb.active
+    ws.title = nome_aba
+
+    if not dados:
+        buffer = io.BytesIO()
+        wb.save(buffer)
+        buffer.seek(0)
+        return StreamingResponse(
+            buffer,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": f"attachment; filename={nome_arquivo}"},
+        )
+
+    colunas = list(dados[0].keys())
+
+    # Cabeçalho estilizado
+    header_fill = PatternFill(start_color="2563EB", end_color="2563EB", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFF")
+    for col_idx, nome_col in enumerate(colunas, start=1):
+        cell = ws.cell(row=1, column=col_idx, value=nome_col)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center")
+
+    # Dados
+    for row_idx, linha in enumerate(dados, start=2):
+        for col_idx, chave in enumerate(colunas, start=1):
+            ws.cell(row=row_idx, column=col_idx, value=linha.get(chave, ""))
+
+    # Ajusta largura das colunas automaticamente
+    for col_idx, nome_col in enumerate(colunas, start=1):
+        col_letter = ws.cell(row=1, column=col_idx).column_letter
+        max_len = len(str(nome_col))
+        for row_idx in range(2, len(dados) + 2):
+            val = ws.cell(row=row_idx, column=col_idx).value
+            max_len = max(max_len, len(str(val or "")))
+        ws.column_dimensions[col_letter].width = min(max_len + 4, 60)
 
     buffer = io.BytesIO()
-    with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
-        df.to_excel(writer, index=False, sheet_name=nome_aba)
-
-        # Ajusta largura das colunas automaticamente
-        ws = writer.sheets[nome_aba]
-        for col in ws.columns:
-            max_len = max((len(str(cell.value or "")) for cell in col), default=10)
-            ws.column_dimensions[col[0].column_letter].width = min(max_len + 4, 60)
-
+    wb.save(buffer)
     buffer.seek(0)
     return StreamingResponse(
         buffer,
