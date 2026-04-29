@@ -14,7 +14,8 @@ export default function Lembretes() {
 
   const salvar = async e => {
     e.preventDefault()
-    await api.post('/lembretes', form)
+    const payload = { ...form, data_prazo: form.data_prazo || null }
+    await api.post('/lembretes', payload)
     setModal(false); setForm(empty); carregar()
   }
 
